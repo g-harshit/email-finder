@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  email-finder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: email-finder
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SERVER_HOST=0.0.0.0
+      - EMAIL_VERIFICATION_CLI_PATH=/root/check_if_email_exists
+      - LOG_LEVEL=info
+      - LOG_FORMAT=json
+      - RATE_LIMIT=60
+      - VERIFICATION_TIMEOUT=10
+      - MAX_EMAIL_PATTERNS=200
+      - VERIFICATION_CONCURRENCY=100
+    networks:
+      - email-finder-network
+    restart: unless-stopped
+
+networks:
+  email-finder-network:
+    driver: bridge

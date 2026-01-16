@@ -46,6 +46,16 @@ func Load() (*Config, error) {
 	apiURL := getEnv("EMAIL_VERIFICATION_API_URL", "http://localhost:8081")
 	apiEndpoint := getEnv("EMAIL_VERIFICATION_API_ENDPOINT", "/v0/check_email")
 	cliPath := getEnv("EMAIL_VERIFICATION_CLI_PATH", "")
+
+	// Auto-detect CLI binary if not specified
+	if cliPath == "" {
+		if _, err := os.Stat("./check_if_email_exists"); err == nil {
+			cliPath = "./check_if_email_exists"
+		} else if _, err := os.Stat("./check_if_email_exists_linux"); err == nil {
+			cliPath = "./check_if_email_exists_linux"
+		}
+	}
+
 	useCLI := cliPath != ""
 
 	logLevel := getEnv("LOG_LEVEL", "info")
